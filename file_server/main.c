@@ -19,10 +19,11 @@
 #define bufflen 255
 
 
-void sendFile(char *fileName,int outToClient)
+void sendFile(char *fileName,long int fileSize, int outToClient)
 {
     while(1)
     {
+           long int rest = fileSize;
 
            /* Open the file that we wish to transfer */
            FILE *fp = fopen(fileName,"r");
@@ -33,42 +34,27 @@ void sendFile(char *fileName,int outToClient)
            }
 
            /* Read data from file and send it */
-           while(1)
-           {
-               /* First read file in chunks of 256 bytes */
+
+          do
+          {
+               /* First read file in chunks of 1000 bytes */
                unsigned char buff[1000]={0};
                int nread = fread(buff,1,1000,fp);
                printf("Bytes read %d \n", nread);
 
-               /* If read was success, send data. */
-               if(nread > 0)
-               {
-                   printf("Sending \n");
-                   write(outToClient, buff, nread);
-               }
 
-               /*
-                * There is something tricky going on with read ..
-                * Either there was error, or we reached end of file.
-                */
-               if (nread < 1000)
-               {
-                   if (feof(fp))
-                       printf("End of file\n");
-                   if (ferror(fp))
-                       printf("Error reading\n");
-                   close(outToClient);
-                   return 0;
-                   break;
-               }
+               printf("Sending \n");
+               write(outToClient, buff, nread);
 
+               rest -= nread;
 
-         }
-           printf("Close punkt\n");
+           }
+           while(rest > 0);
+
+           printf("Send succesfull!\n");
            close(outToClient);
+           return 0;
     }
-     printf("return punkt\n");
-return 0;
 
 }
 
@@ -120,9 +106,6 @@ int main(int argc, char *argv[])
          if (newsockfd < 0)
               error("ERROR on accept");
 
-//---------------------------File check---------------------------
-
-
 
          bzero(filename,bufflen);
          n = read(newsockfd, filename, 255);
@@ -132,10 +115,9 @@ int main(int argc, char *argv[])
          printf("Filnavnet: %s\n",fileName);
 
 
-
          long int file_size;
          file_size = check_File_Exists(filename);
-         //printf("File size %d \n",file_size);
+
 
          sprintf(fsizec,"%d",file_size); //Laver fsize om til char
          n = write(newsockfd,fsizec,sizeof(fsizec));
@@ -144,11 +126,10 @@ int main(int argc, char *argv[])
          n = write(newsockfd, filename, n);
          if (n < 0)
               error("ERROR reading from socket");
+
          filename[n-1] = 0;
          printf("Sending filesize: %d\n",file_size);
-
-        sendFile(filename,newsockfd);
-
+         sendFile(filename,file_size,newsockfd);
 
 
          if(filename == "exit")
