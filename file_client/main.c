@@ -25,6 +25,9 @@ void receiveFile(char *fileName,long int fileSize, int socketfd)
     int count = 0;
     char recvBuff[1000];
 
+    n = strlen(fileName);
+
+    fileName[n-1] = 0;
 
     fp = fopen(fileName, "w");
     if(NULL == fp)
@@ -39,26 +42,19 @@ void receiveFile(char *fileName,long int fileSize, int socketfd)
     /* Receive data in chunks of 1000 bytes */
      do
      {
-
         bytesReceived = read(socketfd, recvBuff, 1000);
-        //if(count == 1)
+        if(count == 1)
         {
             printf("Bytes received %d\n",bytesReceived);
             n = fwrite(recvBuff, 1,bytesReceived,fp);
             rest -= n;
         }
         if(bytesReceived == 504)
-
-        {
-            count = 1;
-            bytesReceived = 0;
-        }
-
-
+        	count = 1;
      }
      while(rest > 0);
+
      printf("Filetransfer complete!\n");
-     rest = 0;
      return 0;
 }
 
@@ -97,6 +93,7 @@ int main(int argc, char *argv[])
          (char *)&serv_addr.sin_addr.s_addr,server->h_length);
     serv_addr.sin_port = htons(portno);
 
+//----------------------------------KODE VI HAR LAVET STARTER HER-----------------------------------
 
     if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0)
             error("ERROR connecting");
@@ -110,6 +107,7 @@ int main(int argc, char *argv[])
         if (n < 0)
             error("ERROR writing to socket");
         fileSize = getFileSizeTCP(sockfd);
+        printf("Filesize: %d\n",fileSize);
 
         bcopy(extractFileName(buffer), fileName, sizeof(buffer)); //Finder filnavn
 
