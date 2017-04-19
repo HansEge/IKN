@@ -17,7 +17,7 @@
 /// </summary>
 file_server::file_server ()
 {
-	// TO DO Your own code
+
 }
 
 /// <summary>
@@ -46,6 +46,6 @@ void file_server::sendFile(std::string fileName, long fileSize, Transport::Trans
 int main(int argc, char **argv)
 {
 	new file_server();
-	
+
 	return 0;
 }
