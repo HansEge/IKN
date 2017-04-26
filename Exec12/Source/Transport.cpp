@@ -32,7 +32,7 @@ namespace Transport
 		if(checksum) delete checksum;
 		if(buffer) delete [] buffer;
 	}
-	
+
 	/// <summary>
 	/// Receives the ack.
 	/// </summary>
@@ -86,8 +86,21 @@ namespace Transport
 	/// </param>
 	void Transport::send(const char buf[], short size)
 	{
-		// TO DO Your own code
-        link->send(buf, size);
+
+		checksum->calcChecksum(buf,size);
+
+		
+
+
+
+
+		char pakkeBuffer[1000] = {0};
+
+		for(int i = 0; i < 1000; i++)
+		{
+		 pakkeBuffer[i] = buf[i];
+		}
+  	link->send(pakkeBuffer, size);
 	}
 
 	/// <summary>
@@ -102,5 +115,3 @@ namespace Transport
         return link->receive(buf, size);
 	}
 }
-
-

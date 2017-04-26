@@ -96,7 +96,7 @@ void Link::send(const char buf[], short size)
 			else
 			buffer[j] = buf[i];
 		}
-
+		v24Write (serialPort, (unsigned char *)buffer, strlen(buffer));
 }
 
 /**
@@ -112,22 +112,34 @@ short Link::receive(char buf[], short size)
 {
 	int j = 0;
 
+	if (v24Getc(serialPort) != 'A')
+	return 0;
+
+	for(int i = 1; i < size; i++)
+	{
+		buffer[i] = v24Getc(serialPort);
+		if(buffer[i] == 'A')
+		break;
+	}
+
+
 		for(int i = 1; i < size-1; ++i)
 		{
-			if(buf[i] == 'B' && buf[i+1] == 'C')
+			if(buffer[i] == 'B' && buffer[i+1] == 'C')
 			{
-				buffer[j] = 'A';
+				buf[j] = 'A';
 				++i;
 			}
-			if(buf[i] == 'B' && buf[i] == 'D')
+			if(buffer[i] == 'B' && buffer[i] == 'D')
 			{
-				buffer[j] = 'B';
+				buf[j] = 'B';
 				++i;
 			}
 			else
-			buffer[j] = buf[i];
+			buf[j] = buffer[i];
 			++j;
 		}
+		cout << buffer << endl;
 
 }
 
