@@ -68,13 +68,13 @@ namespace Transport
 	void Transport::sendAck (bool ackType)
 	{
 		char ackBuf[ACKSIZE];
-        ackBuf [SEQNO] = (ackType ? (buffer [SEQNO] + 1) % 2 : buffer [SEQNO]) ;
+        ackBuf [SEQNO] = (ackType ? (buffer [SEQNO] + 1) % 2 : buffer [SEQNO]);
         ackBuf [TYPE] = ACK;
 		checksum->calcChecksum (ackBuf, ACKSIZE);
 
 		link->send(ackBuf, ACKSIZE);
 	}
-
+	
 	/// <summary>
 	/// Send the specified buffer and size.
 	/// </summary>
@@ -87,9 +87,12 @@ namespace Transport
 	void Transport::send(const char buf[], short size)
 	{
 
-		checksum->calcChecksum(buf,size);
+		buffer[TYPE] = DATA;
+		buffer[SEQNO] = seqNo;
 
-		
+		checksum->calcChecksum (buffer, ACKSIZE);
+
+
 
 
 
