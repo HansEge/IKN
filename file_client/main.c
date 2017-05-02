@@ -42,18 +42,26 @@ void receiveFile(char *fileName,long int fileSize, int socketfd)
     /* Receive data in chunks of 1000 bytes */
      do
      {
+
         bytesReceived = read(socketfd, recvBuff, 1000);
         if(count == 1)
         {
             printf("Bytes received %d\n",bytesReceived);
             n = fwrite(recvBuff, 1,bytesReceived,fp);
             rest -= n;
+            printf("rest: %ld \n",rest);
         }
         if(bytesReceived == 504)
-        	count = 1;
-     }
-     while(rest > 0);
+            count = 1;
+        if(bytesReceived == 0)
+            rest = 0;
 
+     }
+     while(rest > 1000);
+
+     bytesReceived = read(socketfd, recvBuff, rest);
+     n = fwrite(recvBuff, 1,bytesReceived,fp);
+     printf("Bytes received %d\n",bytesReceived);
      printf("Filetransfer complete!\n");
      return 0;
 }

@@ -1,5 +1,8 @@
 #include <cstdio>
 #include "../include/Link.h"
+#include <string.h>
+#include <iostream>
+#include <stdio.h>
 
 namespace Link {
 
@@ -9,7 +12,7 @@ namespace Link {
   */
 Link::Link(int bufsize)
 {
-	buffer = new char[( *2)];
+    buffer = new char[( bufsize*2)];
 
     serialPort=v24OpenPort("/dev/ttyS1",V24_STANDARD);
     if ( serialPort==NULL )
@@ -96,7 +99,7 @@ void Link::send(const char buf[], short size)
 			else
 			buffer[j] = buf[i];
 		}
-		v24Write (serialPort, (unsigned char *)buffer, strlen(buffer));
+        v24Write (serialPort, (unsigned char *)buffer, strlen(buffer));
 }
 
 /**
@@ -139,7 +142,7 @@ short Link::receive(char buf[], short size)
 			buf[j] = buffer[i];
 			++j;
 		}
-		cout << buffer << endl;
+        std::cout << buffer << std::endl;
 
 }
 

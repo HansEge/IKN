@@ -6,6 +6,7 @@
 #include "../include/Transport.h"
 #include "../include/lib.h"
 #include "file_client.h"
+#include "../include/Link.h"
 
 /// <summary>
 /// The BUFSIZE
@@ -26,7 +27,15 @@
 /// </param>
 file_client::file_client(int argc, char **argv)
 {
-   	// TO DO Your own code
+    /*
+    Link::Link * myLink = new Link::Link(BUFSIZE);
+
+    char myMessage[20] = {'hej'};
+
+    mylink->send(myMessage,20);
+
+    //std::cout << "Client message: " << myMessage << std::endl;}
+    */
 }
 
 /// <summary>
@@ -40,13 +49,8 @@ file_client::file_client(int argc, char **argv)
 /// </param>
 void file_client::receiveFile (std::string fileName, Transport::Transport *transport)
 {
-	Link::Link * myLink = new Link::Link(BUFSIZE);
-
-	char myMessage[20] = {'hej'};
-
-	mylink->send(myMessage,20);
-
-	std::cout << "Client message: " << myMessage << std::endl;}
+    //do stuff
+}
 
 /// <summary>
 /// The entry point of the program, where the program control starts and ends.
@@ -54,9 +58,16 @@ void file_client::receiveFile (std::string fileName, Transport::Transport *trans
 /// <param name='args'>
 /// First argument: Filname
 /// </param>
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	new file_client(argc, argv);
+    new file_client(argc, argv);
 
-	return 0;
+    Link::Link test(1000);
+    char buffer[1000] = {};
+
+
+
+    test.send(buffer,1000);
+
+    return 0;
 }
