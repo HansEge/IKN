@@ -74,7 +74,7 @@ namespace Transport
 
 		link->send(ackBuf, ACKSIZE);
 	}
-	
+
 	/// <summary>
 	/// Send the specified buffer and size.
 	/// </summary>
@@ -92,7 +92,7 @@ namespace Transport
 	{
 		pakkeBuffer[TYPE] = DATA; //opbygning af header
 		pakkeBuffer[SEQNO] = seqNo; //opbygning af header
-		
+
 		for(int i = 4; i < size; i++)
 		{
 			pakkeBuffer[i] = buf[i]; //data kopiering
@@ -115,8 +115,16 @@ namespace Transport
 	/// </param>
 	short Transport::receive(char buf[], short size)
 	{
-		// TO DO Your own code
-		ackBuf 
-        return link->receive(buf, size);
+
+    link->recieve(buf, size);
+    if(!checksum->checkChecksum(buffer, ACKSIZE))
+    {
+			//Transport.sendAck(false);
+        sendAck(false);
+    }
+		else if (/* condition */) {
+			/* code */
+		}
+
 	}
 }
