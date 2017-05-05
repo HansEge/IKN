@@ -79,9 +79,9 @@ void Link::send(const char buf[], short size)
 {
 	int j = 0;
 	buffer[0] = 'A';
-	buffer[size] = 'A';
+    int Acount = 1;
 
-		for(int i = 1; i < size-1; ++i)
+        for(int i = 0; i < size-1; ++i)
 		{
 			++j;
 			if(buf[i] == 'A')
@@ -94,8 +94,13 @@ void Link::send(const char buf[], short size)
 			{
 				buffer[j] = 'B';
 				++j;
-				buffer[j] = 'C';
+                buffer[j] = 'D';
 			}
+            else if (buf[i] == 0 && Acount > 0)
+            {
+                buffer[j] = 'A';
+                Acount = 0;
+            }
 			else
 			buffer[j] = buf[i];
 		}

@@ -86,23 +86,24 @@ namespace Transport
 	/// </param>
 	void Transport::send(const char buf[], short size)
 	{
+		char pakkeBuffer[size+4] = {0};
 
-		buffer[TYPE] = DATA;
-		buffer[SEQNO] = seqNo;
-
-		checksum->calcChecksum (buffer, ACKSIZE);
-
-
-
-
-
-
-		char pakkeBuffer[1000] = {0};
-
-		for(int i = 0; i < 1000; i++)
+	do
+	{
+		pakkeBuffer[TYPE] = DATA; //opbygning af header
+		pakkeBuffer[SEQNO] = seqNo; //opbygning af header
+		
+		for(int i = 4; i < size; i++)
 		{
-		 pakkeBuffer[i] = buf[i];
+			pakkeBuffer[i] = buf[i]; //data kopiering
 		}
+		checksum->calcChecksum(pakkebuffer, ACKSIZE);
+		link->send(pakkebuffer, size+4)
+	}
+	while(!receiveAck())
+		old_seqNo = DEFAULT_SEQNO;
+	}
+
   	link->send(pakkeBuffer, size);
 	}
 
@@ -115,6 +116,7 @@ namespace Transport
 	short Transport::receive(char buf[], short size)
 	{
 		// TO DO Your own code
+		ackBuf 
         return link->receive(buf, size);
 	}
 }

@@ -63,7 +63,7 @@ int main(int argc, char **argv)
     new file_client(argc, argv);
 
     Link::Link test(1000);
-    char buffer[1000] = {};
+    char buffer[1000] = {"HejABC"};
 
 
 
