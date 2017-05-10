@@ -4,32 +4,46 @@
 
 \chapter{Link::send}
 
-\lstset{language=Python}          % Set your language (you can change the language for each code-block optionally)
+\lstset{language=C++}          % Set your language (you can change the language for each code-block optionally)
+
+
+I vores link send, vil vi implemnetere SLIP-protokollen som går ud på at vi starter og slutter vores data, altså fram'er hele dataprotokollen med A, for at undgå støj, og derved sikre at vi kender et start og slut punkt for data-bufferen. Vi vælger først at sætte den første plads i vores nye data-array til 'A', så vi ved vi starter med et A. Herefter erstatter vi alle steder vi har et A, med et BC, og et B med et BD. Vi bliver dog nød til at flytte det hele en plads i arrayet, for at få et ekstra karakter ind, dette gøres ved at tælle bufferen op. Alt dette gør vi, da vi kun vil bruge A som start og slut bit, og derfor bliver nød til at erstatte det fra inputbufferen. Hvis vi får et 0 fra inputbufferen, er besked slut, og vi tilføjer derfor et A til bufferen. Vi sikre dog den ikke tilføjer uendelige A, ved at lave en Acount, som bliver brugt som et flag, der bliver sat højt, når vi har lavet den sidste bit om til et A. Hvis vi modtager andet end fra vores inputbuffer end A eller B, bliver det placeret i den nye buffer.   
+
+
 
 \begin{lstlisting}[frame=single]  % Start your code-block
-for i:=maxint to 0 do
-#!/usr/bin/env python3
-import socket
- 
-UDP_IP = "10.0.0.2"
-UDP_PORT_NO = 9000
-U_OR_L = input('Enter U or L: ')
 
-print "Requist target IP:", UDP_IP
-print "Target port no:", UDP_PORT_NO
-print "Messege sent:", U_OR_L
- 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.sendto(U_OR_L, (UDP_IP, UDP_PORT_NO))
+void Link::send(const char buf[], short size)
+{
+	int j = 0;
+	buffer[0] = 'A';
+    int Acount = 0;
 
-while True:
-	data, addr = sock.recvfrom(1024)
-	print ("Received:")
-	print (data)
-
-	print("Socket client closing")
-	sock.close()
-	quit()
+        for(int i = 0; i < size-1; ++i)
+		{
+			++j;
+			if(buf[i] == 'A')
+			{
+				buffer[j] = 'B';
+				++j;
+				buffer[j] = 'C';
+			}
+			else if(buf[i] == 'B')
+			{
+				buffer[j] = 'B';
+				++j;
+                buffer[j] = 'D';
+			}
+            else if (buf[i] == 0 && Acount == 0)
+            {
+                buffer[j] = 'A';
+                Acount = 1;
+            }
+			else
+			buffer[j] = buf[i];
+		}
+        v24Write (serialPort, (unsigned char *)buffer, strlen(buffer));
+}
 \end{lstlisting}
 
 
