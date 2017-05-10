@@ -1,0 +1,49 @@
+\documentclass{report}
+
+\input{Config}
+
+\begin{document}\thispagestyle{empty}
+
+%-----------------------------------------------
+%	PROJECT INFORMATION
+%-----------------------------------------------
+
+\def \institution{Aarhus University}
+\def \subject{3. Semesterprojekt}
+\def \title {Mekanik}
+\def \author{Lasse Lildholdt \\ (201507170)}
+\def \supervisor{Peter H. Mikkelsen}
+
+%-----------------------------------------------
+%	PRE-CONTENT
+%-----------------------------------------------
+
+\include{Pre-content/Title-page-std}
+\include{Pre-content/Contents}
+
+%-----------------------------------------------
+%	CHAPTERS
+%-----------------------------------------------
+
+\pagenumbering{arabic}
+\include{Chapters/Barnevogn/Barnevogn}
+\include{Chapters/Displaymontering/Displaymontering}
+\include{Chapters/Hoejtalermontering/Hoejtalermontering}
+\include{Chapters/Mikrofonmontering/Mikrofonmontering}
+\include{Chapters/Motormontering/Motormontering}
+\include{Chapters/Veroboardmontering/Veroboardmontering}
+\include{Chapters/Vippefunktionalitet/Vippefunktionalitet}
+\include{Chapters/Hjulsencormontering/Hjulsencormontering}
+
+
+
+
+
+%-----------------------------------------------
+%	POST-CONTENT
+%-----------------------------------------------
+
+\bibliographystyle{plain}
+\bibliography{Bibliography}
+
+\end{document}
