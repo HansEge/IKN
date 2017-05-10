@@ -115,14 +115,16 @@ namespace Transport
 	/// </param>
 	short Transport::receive(char buf[], short size)
 	{
+		int sizeCurrent;
+
+		sizeCurrent = link->receive(buffer, LOOPSIZE+ACKSIZE);
 
     link->recieve(buf, size);
     if(!checksum->checkChecksum(buffer, ACKSIZE))
     {
-			//Transport.sendAck(false);
         sendAck(false);
     }
-		else if (/* condition */) {
+		else if () {
 			/* code */
 		}
 
