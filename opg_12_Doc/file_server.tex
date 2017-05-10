@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[danish]{babel}
+\usepackage{listings}             % Include the listings-package
+\begin{document}
+\lstset{language=C++}          % Set your language (you can change the language for each code-block optionally)
+
+
+\begin{lstlisting}[frame=single]  % Start your code-block
+for i:=maxint to 0 do
+#!/usr/bin/env python3
+import socket
+ 
+UDP_IP = "10.0.0.2"
+UDP_PORT_NO = 9000
+U_OR_L = input('Enter U or L: ')
+
+print "Requist target IP:", UDP_IP
+print "Target port no:", UDP_PORT_NO
+print "Messege sent:", U_OR_L
+ 
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.sendto(U_OR_L, (UDP_IP, UDP_PORT_NO))
+
+while True:
+	data, addr = sock.recvfrom(1024)
+	print ("Received:")
+	print (data)
+
+	print("Socket client closing")
+	sock.close()
+	quit()
+\end{lstlisting}
+
+
+
+
+
+\end{document}
