@@ -84,7 +84,7 @@ namespace Transport
 	/// <param name='size'>
 	/// Size.
 	/// </param>
-	void Transport::send(const char buf[], short size)
+    void Transport::send(const char buf[], short size)
 	{
 		char pakkeBuffer[size+4] = {0};
 
@@ -93,19 +93,17 @@ namespace Transport
 		pakkeBuffer[TYPE] = DATA; //opbygning af header
 		pakkeBuffer[SEQNO] = seqNo; //opbygning af header
 
-		for(int i = 4; i < size; i++)
+		for(int i = 0; i < size; i++)
 		{
-			pakkeBuffer[i] = buf[i]; //data kopiering
+			pakkeBuffer[i+ACKSIZE] = buf[i]; //data kopiering
 		}
-		checksum->calcChecksum(pakkebuffer, ACKSIZE);
-		link->send(pakkebuffer, size+4)
-	}
-	while(!receiveAck())
-		old_seqNo = DEFAULT_SEQNO;
-	}
+        checksum->calcChecksum(pakkeBuffer,size+ACKSIZE);
+        link->send(pakkeBuffer, size+4);
 
-  	link->send(pakkeBuffer, size);
 	}
+    while(!receiveAck());
+		old_seqNo = DEFAULT_SEQNO;
+    }
 
 	/// <summary>
 	/// Receive the specified buffer.
@@ -113,20 +111,49 @@ namespace Transport
 	/// <param name='buffer'>
 	/// Buffer.
 	/// </param>
-	short Transport::receive(char buf[], short size)
+    short Transport::receive(char buf[], short sizeApp)
 	{
-		int sizeCurrent;
 
-		sizeCurrent = link->receive(buffer, LOOPSIZE+ACKSIZE);
+    int sizeCurrent = 0;
+    bool ack_;
+    int i;
 
-    link->recieve(buf, size);
-    if(!checksum->checkChecksum(buffer, ACKSIZE))
+    do
     {
-        sendAck(false);
-    }
-		else if () {
-			/* code */
-		}
+        sizeCurrent = link->receive(buffer, sizeApp+ACKSIZE);
 
-	}
+        printf("Transport recieve int |");
+        for(int p=0;p<sizeCurrent;p++)
+            printf("%d ",buffer[p]);
+        printf("\n");
+
+        printf("Transport recieve char |");
+        for(int p=0+ACKSIZE;p<sizeCurrent;p++)
+            printf("%c",buffer[p]);
+        printf("\n");
+
+        ack_ = checksum->checkChecksum (buffer, sizeCurrent);
+
+        if(buffer[SEQNO] == old_seqNo)
+            ack_ = false;
+
+        if(ack_ == false)
+            sendAck(false);
+
+    }
+    while(ack_ == false);
+
+    sendAck(true);
+
+    old_seqNo = buffer[SEQNO];
+
+    for(i = 0; i < sizeApp && i < (sizeCurrent-ACKSIZE); i++)
+    {
+        buf[i] = buffer[i+ACKSIZE];
+    }
+
+    return i;
+
+                //memcpy(buf,buffer+ACKSIZE , size);
+    }
 }

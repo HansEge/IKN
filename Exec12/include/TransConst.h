@@ -10,4 +10,7 @@
 #define	DATA 0
 #define	ACK 1
 
+
+#define LOOPSIZE 1000
+
 #endif /* __TRANSCONST_H__ */

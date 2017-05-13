@@ -17,6 +17,11 @@
 /// </summary>
 file_server::file_server ()
 {
+    Transport::Transport * myTransport = new Transport::Transport(BUFSIZE);
+
+    char myMessage[] = "JALLA";
+
+    myTransport->send(myMessage,strlen(myMessage));
 
 }
 
@@ -34,7 +39,45 @@ file_server::file_server ()
 /// </param>
 void file_server::sendFile(std::string fileName, long fileSize, Transport::Transport *transport)
 {
-	// To do Your own code
+
+
+    while(1)
+        {
+               long int rest = fileSize;
+
+               /* Open the file that we wish to transfer */
+               FILE *fp = fopen("test.txt","r");
+               if(fp==NULL)
+               {
+                   printf("File opern error");
+                   //return 0;
+               }
+
+               /* Read data from file and send it */
+
+              do
+              {
+                   /* First read file in chunks of 1000 bytes */
+                   char buff[1000]={0};
+                   int nread = fread(buff,1,1000,fp);
+                   printf("Bytes read %d \n", nread);
+
+
+                   printf("Sending \n");
+                   transport->send(buff,nread);
+
+                   rest -= nread;
+
+               }
+               while(rest > 0);
+
+               printf("Send succesfull!\n");
+
+               return;
+
+        }
+
+
 }
 
 /// <summary>
