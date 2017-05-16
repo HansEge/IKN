@@ -32,7 +32,7 @@ file_server::file_server ()
 
 
     CORRUPT_DATA = 2;
-    CORRUPT_ACK = 2;
+    CORRUPT_ACK = 1;
 
     /*Modtager filnavn*/
     myTransport->receive(buffer,BUFSIZE);

@@ -81,7 +81,7 @@ void Transport::sendAck (bool ackType)
 
     if(CORRUPT_ACK == 1){
         ackBuf[0] = 0;
-        std::cout << "ACK oedelangt" << std::endl;
+        std::cout << "ACK oedelagt" << std::endl;
     }
    CORRUPT_ACK++;
 
