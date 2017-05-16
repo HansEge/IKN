@@ -111,37 +111,36 @@ namespace Transport
 	/// <param name='buffer'>
 	/// Buffer.
 	/// </param>
-    short Transport::receive(char buf[], short sizeApp)
+	short Transport::receive(char buf[], short sizeApp)
 	{
-
     int sizeCurrent = 0;
     bool ack_;
     int i;
 
-    do
-    {
+    do{
         sizeCurrent = link->receive(buffer, sizeApp+ACKSIZE);
 
+        if (DEBUG_ENABLE == true) {
         printf("Transport recieve int |");
         for(int p=0;p<sizeCurrent;p++)
             printf("%d ",buffer[p]);
         printf("\n");
-
-        printf("Transport recieve char |");
-        for(int p=0+ACKSIZE;p<sizeCurrent;p++)
-            printf("%c",buffer[p]);
-        printf("\n");
+        }
 
         ack_ = checksum->checkChecksum (buffer, sizeCurrent);
-
-        if(buffer[SEQNO] == old_seqNo)
-            ack_ = false;
 
         if(ack_ == false)
             sendAck(false);
 
-    }
-    while(ack_ == false);
+        if(buffer[SEQNO] == old_seqNo)  //Hvis vi modtager den samme pakke igen
+        {
+            ack_ = false;   //Vi har ikke modtaget noget nyt så vi skal køre loopet en gang til
+            sendAck(true); //Vi fortæller senderen at jaja det er fint, vi vil gerne have næste pakke
+        }
+
+
+
+    }while(ack_ == false);
 
     sendAck(true);
 
@@ -154,6 +153,6 @@ namespace Transport
 
     return i;
 
-                //memcpy(buf,buffer+ACKSIZE , size);
-    }
+    //memcpy(buf,buffer+ACKSIZE , size);
+	}
 }
