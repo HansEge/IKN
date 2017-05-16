@@ -148,7 +148,7 @@ short Link::receive(char buf[], short size)
 			++j;
 		}
         std::cout << buffer << std::endl;
+        return j;
 
 }
-
 } /* namespace Link */

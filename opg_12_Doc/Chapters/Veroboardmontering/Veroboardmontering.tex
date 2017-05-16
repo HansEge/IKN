@@ -13,44 +13,47 @@ Herefter laver vi en file descriptor, som peger på filen, den bruger vi til at 
 Hvis der ikke er overført korrupt data, modtager vi herefter filen, med 100 bytes af gangen, når der ikke er mere end 1000 bytes tilbage sender vi en "last bytes recieved" og udkriver størrelsen på arrayet. 
 
 \begin{lstlisting}[frame=single]  % Start your code-block
+
 void file_client::receiveFile (std::string fileName, Transport::Transport *myTransport)
 {
     char buffer[BUFSIZE] = {0};
     int n, recievedSize = 0;
-    long file_size;
+    long fsize;
     int fd;
 
-    /*recieve filesize*/
+    /*Filstoerrelse*/
     myTransport->receive(buffer,BUFSIZE);
-    file_size = atol(buffer);
-    printf("File size: %d \n", file_size);
+    fsize = atol(buffer);
+    printf("Fil stoerrelse: %d \n", fsize);
 
-    if (file_size == 0)
+    if (fsize == 0)
     {
-        fprintf(stderr,"ERROR: The file doesn't exist. \n");
+        fprintf(stderr,"ERROR: Filen findes ikke. \n");
         exit(0);
     }
 
-    /*make file descriptor*/
+    /*Laver file descriptor*/
     fd = open(fileName.c_str(), O_WRONLY | O_CREAT,S_IXGRP);
-    if (fd == -1) error ("ERROR opening file");
+    if (fd == -1) error ("Kunne ikke aabne fil");
     printf("File descriptor: %d \n", fd);
 
-    /*recieving file from server*/
-    for (int i = 0; i<file_size/BUFSIZE+1; i++)
+    /*Fil fra serveren*/
+    for (int i = 0; i<fsize/BUFSIZE+1; i++)
     {
 
-        if (i<file_size/BUFSIZE) 
+        if (i<fsize/BUFSIZE) //Hvis der er mere end 1000bit tilbage
         {
             recievedSize = myTransport->receive(buffer,BUFSIZE);
-            n = write(fd, buffer, BUFSIZE); 
+            n = write(fd, buffer, BUFSIZE); /*fil bliver lagt over i fd*/
+
         }
 
         else
         {
-            recievedSize = myTransport->receive(buffer,file_size%BUFSIZE);
-            n = write(fd, buffer, file_size%BUFSIZE); 
-            printf("Last bytes recieved: %d \n", recievedSize);
+            recievedSize = myTransport->receive(buffer,fsize%BUFSIZE);
+            n = write(fd, buffer, fsize%BUFSIZE); /*fil bliver lagt over i fd*/
+
+            printf("Sidste bit er modtaget: %d \n", recievedSize);
 
         }
 
@@ -59,4 +62,13 @@ void file_client::receiveFile (std::string fileName, Transport::Transport *myTra
 
     close(fd);
 }
+
 \end{lstlisting}	
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width = 300 pt]{Img/client_recieve.PNG}
+\caption{Client modtager fil}
+\label{fig:konceptbillede}
+\end{figure}
