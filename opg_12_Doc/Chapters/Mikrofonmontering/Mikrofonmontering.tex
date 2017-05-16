@@ -5,7 +5,13 @@
 \chapter{Transport::send}
 
 Meningen med vores Transport::send er, at lave forskellige "sikkerheds tjek" på vores buffer[], altså den data vi ønsker at sende til clienten. De "sikkerheds tjek" vi laver på vores data, består af den Header man kan se på billedet nedenfor:\\
-BILLEDE AF HEADER FRA OPGAVEFORMULERING\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width = 300 pt]{Img/header.PNG}
+	\caption{Header tansportlag}
+	\label{fig:konceptbillede}
+\end{figure}
+
 Headerens to byte med checksum-beregning, er henholdsvis mest betydende og mindst betydende del af chechsum beregningen. Der bliver også tildelt et sekvensnummer på det afsendte segment. Den sidste del af headeren er TYPE, som afgører alt efter om det er et 1 eller et 0 om det er et ark, eller data der bliver sendt med.\\
 Meningen med at denne header bliver lagt til dataen i transportlaget, er så når data-pakken når clienten og funktiot. 
 nen Transport::receive() bliver kørt. Så kan data i pakken tjekkes for checksum, sekvensnummer samt kontrollere om ark beskeder sendt rigtig.\\
@@ -49,3 +55,4 @@ CORRUPT_DATA++;
 }
 }
 \end{lstlisting}
+
